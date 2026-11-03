@@ -594,7 +594,9 @@ public class CBManagementController {
 		if (testSteps != null) {
 			for (TestStep testStep : testSteps) {
 				testStep.setScope(scope);
-				testStep.getTestContext().setScope(scope);
+				if (testStep.getTestContext() != null) {
+					testStep.getTestContext().setScope(scope);
+				}
 			}
 		}
 	}
@@ -605,6 +607,13 @@ public class CBManagementController {
 		if (testCases != null) {
 			for (TestCase testCase : testCases) {
 				updateTestScope(testCase, scope);
+			}
+		}
+		// groups can be nested; without this a published plan keeps its nested groups private
+		Set<TestCaseGroup> children = testCaseGroup.getTestCaseGroups();
+		if (children != null) {
+			for (TestCaseGroup child : children) {
+				updateTestScope(child, scope);
 			}
 		}
 	}
